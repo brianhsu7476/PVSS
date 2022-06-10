@@ -1,0 +1,386 @@
+#!/bin/bash
+echo '正在下載與解析檔案...'
+tmp="tempDir"
+if [[ -d $tmp ]]; then rm -r $tmp; fi
+mkdir $tmp
+cd $tmp
+cp ~/PVSS/Public/public.txt ./
+for ((i=1; i<10; ++i)); do
+    if [[ -d ~/PVSS/Server$i ]]; then
+        if [[ -f ~/PVSS/Server$i/$i.txt ]]; then
+            cp ~/PVSS/Server$i/$i.txt ./
+        fi
+    fi
+done
+theFile="decrypt.cpp"
+echo '#include <bits/stdc++.h>' >> $theFile
+echo '#define ll long long' >> $theFile
+echo '//#define int long long' >> $theFile
+echo 'using namespace std;' >> $theFile
+echo 'template<typename T>' >> $theFile
+echo 'inline string to_string(const T& x){' >> $theFile
+echo '  stringstream ss;' >> $theFile
+echo '  return ss<<x,ss.str();' >> $theFile
+echo '}' >> $theFile
+echo 'int now=0;' >> $theFile
+echo 'struct bigN:vector<ll>{' >> $theFile
+echo '  const static int base=1<<29,width=29;' >> $theFile
+echo '  bool negative=0;' >> $theFile
+echo '  bigN(const_iterator a,const_iterator b):vector<ll>(a,b){}' >> $theFile
+echo '  bigN(string s){' >> $theFile
+echo '    if(s.empty())return;' >> $theFile
+echo '    negative=0;' >> $theFile
+echo '    ll t=0;' >> $theFile
+echo '    bitset<1000> a;' >> $theFile
+echo '    for(int i=0; i<int(s.size()); ++i)for(int j=0; j<8; ++j){' >> $theFile
+echo '        a[(i+1<<3)-j-1]=(unsigned char)s[i]&1, s[i]>>=1;' >> $theFile
+echo '    }' >> $theFile
+echo '' >> $theFile
+echo '    for(int i=0, j=(int(s.size())<<3)%width-1; i<int(s.size())<<3; ++i, --j)' >> $theFile
+echo '    {' >> $theFile
+echo '        if(j==-1)' >> $theFile
+echo '        {' >> $theFile
+echo '            if(i)push_back(t);' >> $theFile
+echo '            t=0, j=width-1;' >> $theFile
+echo '        }' >> $theFile
+echo '        t=(t<<1)+a[i];' >> $theFile
+echo '    }' >> $theFile
+echo '    push_back(t);' >> $theFile
+echo '    trim();' >> $theFile
+echo '  }' >> $theFile
+echo '    bigN(const int &x){push_back(x), trim();}' >> $theFile
+echo '    bigN(const ll &x){push_back(x), trim();}' >> $theFile
+echo '    bigN(const char* x):bigN(to_string(x)){}' >> $theFile
+echo '  bigN():negative(0){}' >> $theFile
+echo '  string tostr()' >> $theFile
+echo '  {' >> $theFile
+echo '      bitset<1000> a;' >> $theFile
+echo '      string xx;' >> $theFile
+echo '      int tt=0;' >> $theFile
+echo '      int ok=0,yy=now%29,zz=yy,i,j,k,t2=0;' >> $theFile
+echo '      unsigned char aa=0;' >> $theFile
+echo '      //cerr<<now<<"\n";' >> $theFile
+echo '      //cerr<<(*this)[tt]<<" ";' >> $theFile
+echo '      for(i=0;i<now;i++)' >> $theFile
+echo '      {' >> $theFile
+echo '          //cerr<<i<<" "<<t2+zz-1<<"\n";' >> $theFile
+echo '' >> $theFile
+echo '          a[t2+zz-1]=(*this)[tt]&1;' >> $theFile
+echo '          zz--;' >> $theFile
+echo '          (*this)[tt]/=2;' >> $theFile
+echo '          if(zz==0)' >> $theFile
+echo '          {' >> $theFile
+echo '              tt++;' >> $theFile
+echo '              //cerr<<(*this)[tt]<<" ";' >> $theFile
+echo '              t2=i+1;' >> $theFile
+echo '              zz=29;' >> $theFile
+echo '          }' >> $theFile
+echo '      }' >> $theFile
+echo '' >> $theFile
+echo '      aa=0;' >> $theFile
+echo '      for(i=0;i<now;i++)' >> $theFile
+echo '      {' >> $theFile
+echo '          //cerr<<a[i];' >> $theFile
+echo '          aa+=a[i]*(1<<(8-(i%8)-1));' >> $theFile
+echo '' >> $theFile
+echo '          if(i%8==7)' >> $theFile
+echo '          {' >> $theFile
+echo '              //cerr<<aa;' >> $theFile
+echo '              xx+=aa;' >> $theFile
+echo '              aa=0;' >> $theFile
+echo '          }' >> $theFile
+echo '' >> $theFile
+echo '      }' >> $theFile
+echo '      //cerr<<"\n";' >> $theFile
+echo '' >> $theFile
+echo '      return xx;' >> $theFile
+echo '' >> $theFile
+echo '  }' >> $theFile
+echo '  void trim(){' >> $theFile
+echo '    while(size()&&!back())pop_back();' >> $theFile
+echo '    if(empty())negative=0;' >> $theFile
+echo '  }' >> $theFile
+echo '  void carry(int _base=base){' >> $theFile
+echo '    for(size_t i=0;i<size();++i){' >> $theFile
+echo '      if(at(i)>=0&&at(i)<_base)continue;' >> $theFile
+echo '      if(i+1u==size())push_back(0);' >> $theFile
+echo '      int r=at(i)&_base-1;' >> $theFile
+echo '      if(r<0)r+=_base;' >> $theFile
+echo '      at(i+1)+=(at(i)-r)>>29,at(i)=r;' >> $theFile
+echo '    }' >> $theFile
+echo '  }' >> $theFile
+echo '  int abscmp(const bigN &b)const{' >> $theFile
+echo '    if(size()>b.size())return 1;' >> $theFile
+echo '    if(size()<b.size())return -1;' >> $theFile
+echo '    for(int i=int(size())-1;i>=0;--i){' >> $theFile
+echo '      if(at(i)>b[i])return 1;' >> $theFile
+echo '      if(at(i)<b[i])return -1;' >> $theFile
+echo '    }' >> $theFile
+echo '    return 0;' >> $theFile
+echo '  }' >> $theFile
+echo '  int cmp(const bigN &b)const{' >> $theFile
+echo '    if(negative!=b.negative)return negative?-1:1;' >> $theFile
+echo '    return negative?-abscmp(b):abscmp(b);' >> $theFile
+echo '  }' >> $theFile
+echo '  bool operator<(const bigN&b)const{return cmp(b)<0;}' >> $theFile
+echo '  bool operator>(const bigN&b)const{return cmp(b)>0;}' >> $theFile
+echo '  bool operator<=(const bigN&b)const{return cmp(b)<=0;}' >> $theFile
+echo '  bool operator>=(const bigN&b)const{return cmp(b)>=0;}' >> $theFile
+echo '  bool operator==(const bigN&b)const{return !cmp(b);}' >> $theFile
+echo '  bool operator!=(const bigN&b)const{return cmp(b)!=0;}' >> $theFile
+echo '  bigN abs()const{' >> $theFile
+echo '    bigN res=*this;' >> $theFile
+echo '    return res.negative=0, res;' >> $theFile
+echo '  }' >> $theFile
+echo '  bigN operator-()const{' >> $theFile
+echo '    bigN res=*this;' >> $theFile
+echo '    return res.negative=!negative,res.trim(),res;' >> $theFile
+echo '  }' >> $theFile
+echo '  bigN operator+(const bigN &b)const{' >> $theFile
+echo '    if(negative)return -(-(*this)+(-b));' >> $theFile
+echo '    if(b.negative)return *this-(-b);' >> $theFile
+echo '    bigN res=*this;' >> $theFile
+echo '    if(b.size()>size())res.resize(b.size());' >> $theFile
+echo '    for(size_t i=0;i<b.size();++i)res[i]+=b[i];' >> $theFile
+echo '    return res.carry(),res.trim(),res;' >> $theFile
+echo '  }' >> $theFile
+echo '  bigN operator-(const bigN &b)const{' >> $theFile
+echo '    if(negative)return -(-(*this)-(-b));' >> $theFile
+echo '    if(b.negative)return *this+(-b);' >> $theFile
+echo '    if(abscmp(b)<0)return -(b-(*this));' >> $theFile
+echo '    bigN res=*this;' >> $theFile
+echo '    if(b.size()>size())res.resize(b.size());' >> $theFile
+echo '    for(size_t i=0;i<b.size();++i)res[i]-=b[i];' >> $theFile
+echo '    return res.carry(),res.trim(),res;' >> $theFile
+echo '  }' >> $theFile
+echo '  bigN operator*(const bigN &b)const{' >> $theFile
+echo '    bigN res;' >> $theFile
+echo '    res.negative=negative!=b.negative;' >> $theFile
+echo '    res.resize(size()+b.size());' >> $theFile
+echo '    for(size_t i=0;i<size();++i)' >> $theFile
+echo '      for(size_t j=0;j<b.size();++j)' >> $theFile
+echo '      {' >> $theFile
+echo '        //assert(at(i)*b[j]>=0);' >> $theFile
+echo '        if((res[i+j]+=at(i)*b[j])>=base){' >> $theFile
+echo '          res[i+j+1]+=res[i+j]/base;' >> $theFile
+echo '          res[i+j]%=base;' >> $theFile
+echo '        }' >> $theFile
+echo '      }' >> $theFile
+echo '        return res.trim(),res;' >> $theFile
+echo '  }' >> $theFile
+echo '  bigN operator/(const bigN &b)const{' >> $theFile
+echo '    int base=1<<29;' >> $theFile
+echo '    int norm=base/(b.back()+1);' >> $theFile
+echo '    bigN x=abs()*norm, y=b.abs()*norm, q, r;' >> $theFile
+echo '    q.resize(x.size());' >> $theFile
+echo '    for(int i=(int)x.size()-1;i>=0;--i){' >> $theFile
+echo '      r=r*base+x[i];' >> $theFile
+echo '      int s1=r.size()<=y.size()?0:r[y.size()];' >> $theFile
+echo '      int s2=r.size()<y.size()?0:r[y.size()-1];' >> $theFile
+echo '      ll d=(((ll)base*s1)+s2)/y.back();' >> $theFile
+echo '      //cout<<r<<endl; fflush(stdout);' >> $theFile
+echo '      r=r-y*d;' >> $theFile
+echo '      //cout<<d<<endl; fflush(stdout);' >> $theFile
+echo '      //cout<<r<<endl; fflush(stdout);' >> $theFile
+echo '      //cout<<y<<endl; fflush(stdout);' >> $theFile
+echo '      while(r.negative)r=r+y,--d;' >> $theFile
+echo '      q[i]=d;' >> $theFile
+echo '    }' >> $theFile
+echo '    q.negative=negative!=b.negative;' >> $theFile
+echo '    return q.trim(),q;' >> $theFile
+echo '  }' >> $theFile
+echo '  bigN operator%(const bigN &b)const{' >> $theFile
+echo '    return *this-(*this/b)*b;' >> $theFile
+echo '  }' >> $theFile
+echo '  friend istream& operator>>(istream &ss,bigN &b){' >> $theFile
+echo '    string s;' >> $theFile
+echo '    return ss>>s, b=s, ss;' >> $theFile
+echo '  }' >> $theFile
+echo '  friend ostream& operator<<(ostream &ss,const bigN &b){' >> $theFile
+echo '    for(int i=0; i<b.size(); ++i)ss<<b[i]<<'"'"' '"'"'; ss<<endl;' >> $theFile
+echo '    return ss;' >> $theFile
+echo '  }' >> $theFile
+echo '  template<typename T>' >> $theFile
+echo '    operator T(){' >> $theFile
+echo '      stringstream ss;' >> $theFile
+echo '      ss<<*this;' >> $theFile
+echo '      T res;' >> $theFile
+echo '      return ss>>res,res;' >> $theFile
+echo '    }' >> $theFile
+echo '' >> $theFile
+echo '};' >> $theFile
+echo '' >> $theFile
+echo 'bigN Pow(bigN a, bigN b, bigN p){' >> $theFile
+echo '    bigN c=1;' >> $theFile
+echo '    //cout<<1; fflush(stdout);' >> $theFile
+echo '    for(; b>0; a=a*a%p, b=b/2){' >> $theFile
+echo '        if(b%2==1)c=c*a%p;' >> $theFile
+echo '        //cout<<1; fflush(stdout);' >> $theFile
+echo '    }' >> $theFile
+echo '    return c;' >> $theFile
+echo '}' >> $theFile
+echo 'bigN Pow(bigN a, bigN b){' >> $theFile
+echo '    bigN c=1;' >> $theFile
+echo '    //cout<<1; fflush(stdout);' >> $theFile
+echo '    for(; b>0; a=a*a, b=b/2){' >> $theFile
+echo '        if(b%2==1)c=c*a;' >> $theFile
+echo '        //cout<<1; fflush(stdout);' >> $theFile
+echo '    }' >> $theFile
+echo '    return c;' >> $theFile
+echo '}' >> $theFile
+echo 'bigN S[1000005],P;' >> $theFile
+echo 'bigN xx[15];' >> $theFile
+echo 'bigN F[15];' >> $theFile
+echo 'bigN ss[1000005][15];' >> $theFile
+echo 'bigN aaaa[15][15];' >> $theFile
+echo 'bigN bbbb[15][15];' >> $theFile
+echo 'int all[15];' >> $theFile
+echo 'bigN ans=0,g;' >> $theFile
+echo 'char aaa[15];' >> $theFile
+echo 'stack < int > tt;' >> $theFile
+echo 'bigN abc=Pow(2,29);' >> $theFile
+echo 'void get(bigN &x,FILE* xxx)' >> $theFile
+echo '{' >> $theFile
+echo '    x=0;' >> $theFile
+echo '' >> $theFile
+echo '    int t;' >> $theFile
+echo '    while(~fscanf(xxx,"%d",&t))' >> $theFile
+echo '    {' >> $theFile
+echo '        if(t!=-1) tt.push(t);' >> $theFile
+echo '        else break;' >> $theFile
+echo '    }' >> $theFile
+echo '    while(!tt.empty())' >> $theFile
+echo '    {' >> $theFile
+echo '        x=x*abc+tt.top();' >> $theFile
+echo '        tt.pop();' >> $theFile
+echo '    }' >> $theFile
+echo '' >> $theFile
+echo '}' >> $theFile
+echo '' >> $theFile
+echo 'signed main()' >> $theFile
+echo '{' >> $theFile
+echo '    freopen("check.txt","w+t",stdout);' >> $theFile
+echo '        strcpy(aaa,"1.txt");' >> $theFile
+echo '        srand(time(NULL));' >> $theFile
+echo '        int N=9,K=5,i,j,k,ok=1,tt=0,M;' >> $theFile
+echo '    bigN a,b;' >> $theFile
+echo '        auto xxx=fopen("public.txt","r");' >> $theFile
+echo '    get(P,xxx);' >> $theFile
+echo '    get(g,xxx);' >> $theFile
+echo '' >> $theFile
+echo '        fscanf(xxx,"%d",&M);' >> $theFile
+echo '' >> $theFile
+echo '        for(i=0;i<M;i++) get(S[i],xxx);' >> $theFile
+echo '        for(i=1;i<=N;i++) get(xx[i],xxx);' >> $theFile
+echo '        for(i=1;i<K;i++) get(F[i],xxx);' >> $theFile
+echo '        fclose(xxx);' >> $theFile
+echo '        tt=1;' >> $theFile
+echo '        for(i=1;i<=N;i++)' >> $theFile
+echo '        {' >> $theFile
+echo '            all[i]=i;' >> $theFile
+echo '                aaa[0]=i+'"'"'0'"'"';' >> $theFile
+echo '                xxx=fopen(aaa,"r");' >> $theFile
+echo '                if(xxx==NULL) continue;' >> $theFile
+echo '                for(j=0;j<M;j++) get(ss[j][i],xxx);' >> $theFile
+echo '                fclose(xxx);' >> $theFile
+echo '        }' >> $theFile
+echo '        for(i=1;i<=N;i++)' >> $theFile
+echo '    {' >> $theFile
+echo '        bigN aa=1;' >> $theFile
+echo '        for(j=1;j<=N;j++)' >> $theFile
+echo '        {' >> $theFile
+echo '            aaaa[i][j]=Pow((xx[i]-xx[j]+P)%P,P-2,P);' >> $theFile
+echo '            aa=aa*xx[i]%(P-1);' >> $theFile
+echo '            bbbb[i][j]=Pow(F[j],aa,P);' >> $theFile
+echo '        }' >> $theFile
+echo '    }' >> $theFile
+echo '        for(int ttt=0;ttt<M;ttt++)' >> $theFile
+echo '    {' >> $theFile
+echo '        if(ttt<=1) now=8*13;' >> $theFile
+echo '        else now=8*6;' >> $theFile
+echo '        tt=0;' >> $theFile
+echo '        for(i=1;i<=N;i++)' >> $theFile
+echo '        {' >> $theFile
+echo '            a=Pow(g,ss[ttt][i]%(P-1),P);' >> $theFile
+echo '            b=S[ttt];' >> $theFile
+echo '            for(j=1;j<K;j++) b=b*bbbb[i][j]%P;' >> $theFile
+echo '            if(a==b) all[tt++]=i;' >> $theFile
+echo '        }' >> $theFile
+echo '        ans=0;' >> $theFile
+echo '        for(i=1;i<=K;i++)' >> $theFile
+echo '        {' >> $theFile
+echo '            bigN tt=1;' >> $theFile
+echo '            for(j=1;j<=K;j++)' >> $theFile
+echo '            {' >> $theFile
+echo '                if(i==j) continue;' >> $theFile
+echo '                tt=tt*(P-xx[all[j]]);' >> $theFile
+echo '                tt=tt*aaaa[all[i]][all[j]]%P;' >> $theFile
+echo '            }' >> $theFile
+echo '            ans=(ans+tt*ss[ttt][all[i]]);' >> $theFile
+echo '        }' >> $theFile
+echo '        //cerr<<(ans%P)<<"\n";' >> $theFile
+echo '        cout<<(ans%P).tostr();' >> $theFile
+echo '        //cerr<<"\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"<<(ttt+1)*100/M<<"%";' >> $theFile
+echo '    }' >> $theFile
+echo '}' >> $theFile
+g++ $theFile -o a.out
+./a.out
+mv check.txt key.txt
+cp ~/PVSS/Public/shaPublic.txt public.txt
+for ((i=1; i<10; ++i)); do
+    if [[ -d ~/PVSS/Server$i ]]; then
+        if [[ -f ~/PVSS/Server$i/sha$i.txt ]]; then
+            cp ~/PVSS/Server$i/sha$i.txt $i.txt
+        fi
+    fi
+done
+./a.out
+mv check.txt shaKey.txt
+theFile="hextochar.cpp"
+echo '#include <bits/stdc++.h>' >> $theFile
+echo 'using namespace std;' >> $theFile
+echo '' >> $theFile
+echo 'signed main(){' >> $theFile
+echo '    FILE *in=fopen("shafile", "rb");' >> $theFile
+echo '    char s[100], t[100];' >> $theFile
+echo '    fread(s, 1, 64, in);' >> $theFile
+echo '    for(int i=0; i<64; ++i)s[i]=s[i]<='"'"'9'"'"'?s[i]-48:s[i]-'"'"'a'"'"'+10;' >> $theFile
+echo '    for(int i=0; i<32; ++i)t[i]=16*s[i*2]+s[i*2+1];' >> $theFile
+echo '    for(int i=0; i<32; ++i)cout<<t[i];' >> $theFile
+echo '}' >> $theFile
+g++ $theFile -o a.out
+pdfEnc=1
+while [[ 1 == 1 ]]; do
+    sha256sum ~/PVSS/Server$pdfEnc/pdfenc > shafile
+    ./a.out > sha.txt
+    if [[ `diff shaKey.txt sha.txt` == '' ]]; then break; fi
+    if [[ $pdfEnc == 9 ]]; then break; fi
+    pdfEnc=$(($pdfEnc+1))
+done
+cp ~/PVSS/Server$pdfEnc/pdfenc pdfenc
+echo 'pdfenc original.pdf' > tmp
+theFile="genBigKey.cpp"
+echo '#include <bits/stdc++.h>' >> $theFile
+echo 'using namespace std;' >> $theFile
+echo 'char key[100], tokey[10000], pdf[20000007]; int n=32, m=20000000, t=100, l;' >> $theFile
+echo 'signed main(){' >> $theFile
+echo '    char s1[10000], s2[10000];' >> $theFile
+echo '    cin>>s1>>s2;' >> $theFile
+echo '    FILE *Key=fopen("key.txt", "rb"), *Pdf=fopen(s1, "rb");' >> $theFile
+echo '    l=n=fread(key, 1, n, Key), m=fread(pdf, 1, m, Pdf);' >> $theFile
+echo '    for(int i=0; i<n; ++i)tokey[i]=key[i];' >> $theFile
+echo '    for(int i=0; i<t; ++i){' >> $theFile
+echo '        for(int j=l+n-2; j>=0; --j){' >> $theFile
+echo '            int s=0;' >> $theFile
+echo '            for(int k=0; k<n; ++k)if(j-k<l&&j-k>=0)s+=(int)tokey[j-k]*key[k];' >> $theFile
+echo '            tokey[j]=s;' >> $theFile
+echo '        }' >> $theFile
+echo '        l+=n-1;' >> $theFile
+echo '    }' >> $theFile
+echo '    for(int i=0; i<m; ++i)pdf[i]^=tokey[i%l];' >> $theFile
+echo '    FILE *Res=fopen(s2, "wb");' >> $theFile
+echo '    fwrite(pdf, 1, m, Res);' >> $theFile
+echo '}' >> $theFile
+g++ $theFile -o a.out
+./a.out < tmp
+echo '解析完成'
