@@ -224,15 +224,19 @@ bigN ans=0,g;
 char aaa[15];
 stack < int > tt;
 bigN abc=Pow(2,29);
+char abcde[1005];
 void get(bigN &x,FILE* xxx)
 {
     x=0;
 
     int t;
-    while(~fscanf(xxx,"%d",&t))
+    while(~fscanf(xxx,"%s",abcde))
     {
-        if(t!=-1) tt.push(t);
-        else break;
+        //cerr<<abcde<<"\n";
+        int t=0;
+        if(abcde[0]=='-'&&abcde[1]=='1'&&abcde[2]=='\0') break;
+        for(int i=0;abcde[i]!='\0';i++) t=t*10+(abcde[i]-'0');
+        tt.push(t);
     }
     while(!tt.empty())
     {
@@ -262,11 +266,17 @@ signed main()
         tt=1;
         for(i=1;i<=N;i++)
         {
+
             all[i]=i;
                 aaa[0]=i+'0';
                 xxx=fopen(aaa,"r");
                 if(xxx==NULL) continue;
-                for(j=0;j<M;j++) get(ss[j][i],xxx);
+                for(j=0;j<M;j++)
+                {
+                    //cerr<<i<<" "<<j<<"\n";
+                    get(ss[j][i],xxx);
+                    //cerr<<i<<" "<<j<<"\n";
+                }
                 fclose(xxx);
         }
         for(i=1;i<=N;i++)
