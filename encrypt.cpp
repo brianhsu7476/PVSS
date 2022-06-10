@@ -216,8 +216,8 @@ signed main()
         bigN P2=P*(P-1);
 
         srand(7122);
-    fstream  file;
-        file.open("key.txt",ios::in|ios::binary);
+        FILE* file = fopen("key.txt", "r");
+        //file.open("key.txt",ios::in|ios::binary);
         strcpy(tt,"1.txt");
         freopen("public.txt","w+t",stdout);
         int N=9,K=5,m,i,j,k,ok=0,t,M=0,xax=0;
@@ -225,11 +225,10 @@ signed main()
         char xxx;
         bigN TT;
         cout<<P<<g;
-        getline(file,bb);
-        //cerr<<bb.size();
         for(xax=0;xax<32;)
         {
-            aa+=bb[xax];
+            xxx=getc(file);
+            aa+=xxx;
             xax++;
             //cerr<<xax<<" "<<xxx<<"\n";
             if(xax%13==0)
@@ -291,7 +290,6 @@ signed main()
             cout<<ss[k][i]%(P*(P-1));
             //cerr<<"\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"<<((i-1)*M+k+1)*100/(M*N)<<"%";
         }
-
         }
         return 0;
 }
