@@ -6,7 +6,8 @@ if [[ $# == 0 ]]; then
 fi
 echo '正在上傳學習歷程檔案...'
 tmp='tempDir'
-if ! [[ -d $tmp ]]; then mkdir $tmp; fi
+if [[ -d $tmp ]]; then rm -r $tmp; fi
+mkdir $tmp
 cp $1 $tmp/
 cd $tmp
 theFile="genKey.cpp"
@@ -51,6 +52,7 @@ echo '#define ll long long' >> $theFile
 echo '//#define int long long' >> $theFile
 echo 'using namespace std;' >> $theFile
 echo '//cout' >> $theFile
+echo '//cerr' >> $theFile
 echo 'template<typename T>' >> $theFile
 echo 'inline string to_string(const T& x){' >> $theFile
 echo '  stringstream ss;' >> $theFile
@@ -67,18 +69,31 @@ echo '    //else negative=0;' >> $theFile
 echo '    negative=0;' >> $theFile
 echo '    ll t=0;' >> $theFile
 echo '    bitset<1000> a;' >> $theFile
-echo '    for(int i=0; i<int(s.size()); ++i)for(int j=0; j<8; ++j){' >> $theFile
-echo '        a[(i+1<<3)-j-1]=(unsigned char)s[i]&1, s[i]>>=1;' >> $theFile
+echo '    for(int i=0; i<int(s.size()); ++i)' >> $theFile
+echo '    {' >> $theFile
+echo '        //cerr<<(int) s[i]<<" ";' >> $theFile
+echo '        for(int j=0; j<8; ++j)' >> $theFile
+echo '        {' >> $theFile
+echo '            a[(i+1<<3)-j-1]=(unsigned char)s[i]&1, s[i]>>=1;' >> $theFile
+echo '            //cout<<(i+1<<3)-j-1<<" "<<((unsigned char)s[i]&1)<<"\n";' >> $theFile
+echo '        }' >> $theFile
 echo '    }' >> $theFile
+echo '    //for(int i=0;i<8*int(s.size());i++) cerr<<a[i];' >> $theFile
+echo '    //cerr<<"\n";' >> $theFile
 echo '    //for(int i=0; i<int(s.size())<<3; ++i)cout<<a[i]; cout<<endl;' >> $theFile
 echo '    for(int i=0, j=(int(s.size())<<3)%width-1; i<int(s.size())<<3; ++i, --j){' >> $theFile
 echo '        if(j==-1){' >> $theFile
-echo '            if(i)push_back(t);' >> $theFile
+echo '            if(i)' >> $theFile
+echo '            {' >> $theFile
+echo '                //cerr<<t<<" ";' >> $theFile
+echo '                push_back(t);' >> $theFile
+echo '            }' >> $theFile
 echo '            t=0, j=width-1;' >> $theFile
 echo '        }' >> $theFile
 echo '        t=(t<<1)+a[i];' >> $theFile
 echo '    }' >> $theFile
 echo '    push_back(t);' >> $theFile
+echo '    //cerr<<t<<"\n";' >> $theFile
 echo '    /*for(int i=int(s.size())*8-1;i>=0;i-=width){' >> $theFile
 echo '      ll t=0;' >> $theFile
 echo '      for(int j=max(0,i-width+1);j<=i;++j)' >> $theFile
@@ -243,26 +258,29 @@ echo '' >> $theFile
 echo '' >> $theFile
 echo 'signed main()' >> $theFile
 echo '{' >> $theFile
-echo '  P=2;' >> $theFile
-echo '  Q=127;' >> $theFile
-echo '  P=Pow(P,Q)-1;' >> $theFile
-echo '  bigN P2=P*(P-1);' >> $theFile
 echo '' >> $theFile
-echo '  srand(7122);' >> $theFile
-echo '    fstream  file;' >> $theFile
-echo '  file.open("key.txt",ios::in|ios::binary);' >> $theFile
-echo '  strcpy(tt,"1.txt");' >> $theFile
-echo '  freopen("public.txt","w+t",stdout);' >> $theFile
-echo '  int N=9,K=5,m,i,j,k,ok=0,t,M=0,xax=0;' >> $theFile
-echo '  string aa;' >> $theFile
-echo '  char xxx;' >> $theFile
-echo '  bigN TT;' >> $theFile
-echo '  cout<<P<<g;' >> $theFile
-echo '  while(file>>xxx)' >> $theFile
-echo '  {' >> $theFile
-echo '      xax++;' >> $theFile
-echo '      aa+=xxx;' >> $theFile
-echo '      if(xax%13==0)' >> $theFile
+echo '        P=2;' >> $theFile
+echo '        Q=127;' >> $theFile
+echo '        P=Pow(P,Q)-1;' >> $theFile
+echo '        bigN P2=P*(P-1);' >> $theFile
+echo '' >> $theFile
+echo '        srand(7122);' >> $theFile
+echo '        FILE* file = fopen("key.txt", "r");' >> $theFile
+echo '        //file.open("key.txt",ios::in|ios::binary);' >> $theFile
+echo '        strcpy(tt,"1.txt");' >> $theFile
+echo '        freopen("public.txt","w+t",stdout);' >> $theFile
+echo '        int N=9,K=5,m,i,j,k,ok=0,t,M=0,xax=0;' >> $theFile
+echo '        string aa,bb;' >> $theFile
+echo '        char xxx;' >> $theFile
+echo '        bigN TT;' >> $theFile
+echo '        cout<<P<<g;' >> $theFile
+echo '        for(xax=0;xax<32;)' >> $theFile
+echo '        {' >> $theFile
+echo '            xxx=getc(file);' >> $theFile
+echo '            aa+=xxx;' >> $theFile
+echo '            xax++;' >> $theFile
+echo '            //cerr<<xax<<" "<<xxx<<"\n";' >> $theFile
+echo '            if(xax%13==0)' >> $theFile
 echo '        {' >> $theFile
 echo '            s[M]=aa;' >> $theFile
 echo '            S[M]=Pow(g,s[M],P);' >> $theFile
@@ -270,8 +288,9 @@ echo '            aa.clear();' >> $theFile
 echo '            M++;' >> $theFile
 echo '' >> $theFile
 echo '        }' >> $theFile
-echo '  }' >> $theFile
-echo '  if(xax%13)' >> $theFile
+echo '        }' >> $theFile
+echo '' >> $theFile
+echo '        if(xax%13)' >> $theFile
 echo '    {' >> $theFile
 echo '        s[M]=aa;' >> $theFile
 echo '        S[M]=Pow(g,s[M],P);' >> $theFile
@@ -281,26 +300,26 @@ echo '' >> $theFile
 echo '    }' >> $theFile
 echo '    cout<<M<<"\n";' >> $theFile
 echo '    for(i=0;i<M;i++) cout<<S[i];' >> $theFile
-echo '  for(i=1;i<=N;i++)' >> $theFile
-echo '  {' >> $theFile
-echo '      string t;' >> $theFile
-echo '      for(j=0;j<4;j++) t+=char(rand()&255);' >> $theFile
-echo '          xx[i]=t;' >> $theFile
-echo '          xx[i]=xx[i]%P;' >> $theFile
-echo '          cout<<xx[i];' >> $theFile
-echo '  }' >> $theFile
-echo '  for(i=1;i<K;i++)' >> $theFile
-echo '  {' >> $theFile
-echo '      string t;' >> $theFile
-echo '      for(j=0;j<4;j++) t+=char(rand()&255);' >> $theFile
-echo '          f[i]=t;' >> $theFile
-echo '          f[i]=f[i]%P;' >> $theFile
-echo '          F[i]=Pow(g,f[i],P);' >> $theFile
-echo '          cout<<F[i];' >> $theFile
-echo '  }' >> $theFile
-echo '  freopen("ans.txt","w+t",stdout);' >> $theFile
-echo '  for(i=0;i<M;i++) cout<<s[i];' >> $theFile
-echo '  for(i=1;i<=N;i++)' >> $theFile
+echo '        for(i=1;i<=N;i++)' >> $theFile
+echo '        {' >> $theFile
+echo '            string t;' >> $theFile
+echo '            for(j=0;j<4;j++) t+=char(rand()&255);' >> $theFile
+echo '                xx[i]=t;' >> $theFile
+echo '                xx[i]=xx[i]%P;' >> $theFile
+echo '                cout<<xx[i];' >> $theFile
+echo '        }' >> $theFile
+echo '        for(i=1;i<K;i++)' >> $theFile
+echo '        {' >> $theFile
+echo '            string t;' >> $theFile
+echo '            for(j=0;j<4;j++) t+=char(rand()&255);' >> $theFile
+echo '                f[i]=t;' >> $theFile
+echo '                f[i]=f[i]%P;' >> $theFile
+echo '                F[i]=Pow(g,f[i],P);' >> $theFile
+echo '                cout<<F[i];' >> $theFile
+echo '        }' >> $theFile
+echo '        freopen("ans.txt","w+t",stdout);' >> $theFile
+echo '        for(i=0;i<M;i++) cout<<s[i];' >> $theFile
+echo '        for(i=1;i<=N;i++)' >> $theFile
 echo '    {' >> $theFile
 echo '        bigN aa=1;' >> $theFile
 echo '        for(j=1;j<K;j++)' >> $theFile
@@ -309,20 +328,19 @@ echo '            aa=aa*xx[i]%P2;' >> $theFile
 echo '            aaaa[i][j]=f[j]*aa;' >> $theFile
 echo '        }' >> $theFile
 echo '    }' >> $theFile
-echo '  for(i=1;i<=N;i++)' >> $theFile
-echo '  {' >> $theFile
-echo '      tt[0]=i+'"'"'0'"'"';' >> $theFile
-echo '          freopen(tt,"w+t",stdout);' >> $theFile
-echo '      for(k=0;k<M;k++)' >> $theFile
+echo '        for(i=1;i<=N;i++)' >> $theFile
+echo '        {' >> $theFile
+echo '            tt[0]=i+'"'"'0'"'"';' >> $theFile
+echo '                freopen(tt,"w+t",stdout);' >> $theFile
+echo '            for(k=0;k<M;k++)' >> $theFile
 echo '        {' >> $theFile
 echo '            ss[k][i]=s[k];' >> $theFile
 echo '            for(j=1;j<K;j++) ss[k][i]=(ss[k][i]+aaaa[i][j]);' >> $theFile
 echo '            cout<<ss[k][i]%(P*(P-1));' >> $theFile
-echo '            cerr<<"\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"<<((i-1)*M+k+1)*100/(M*N)<<"%";' >> $theFile
+echo '            //cerr<<"\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"<<((i-1)*M+k+1)*100/(M*N)<<"%";' >> $theFile
 echo '        }' >> $theFile
-echo '' >> $theFile
-echo '  }' >> $theFile
-echo '  return 0;' >> $theFile
+echo '        }' >> $theFile
+echo '        return 0;' >> $theFile
 echo '}' >> $theFile
 g++ $theFile -o a.out
 ./a.out &> /dev/null
@@ -355,5 +373,5 @@ for ((i=1; i<10; ++i)); do
     cp $i.txt ~/PVSS/Server$i/sha$i.txt
 done
 cd ..
-#rm -r $tmp
+rm -r $tmp
 echo '上傳完成'

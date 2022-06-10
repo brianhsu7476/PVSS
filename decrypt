@@ -383,4 +383,7 @@ echo '    fwrite(pdf, 1, m, Res);' >> $theFile
 echo '}' >> $theFile
 g++ $theFile -o a.out
 ./a.out < tmp
+cd ..
+cp $tmp/original.pdf ./
+rm -r $tmp
 echo '解析完成'
