@@ -4,8 +4,9 @@ if [[ $# == 0 ]]; then
     echo '使用方法：./encrypt 學習歷程檔名'
     exit 1
 fi
+echo '正在上傳學習歷程檔案...'
 tmp='tempDir'
-mkdir $tmp
+if ! [[ -d $tmp ]]; then mkdir $tmp; fi
 cp $1 $tmp/
 cd $tmp
 theFile="genKey.cpp"
@@ -325,10 +326,34 @@ echo '  return 0;' >> $theFile
 echo '}' >> $theFile
 g++ $theFile -o a.out
 ./a.out &> /dev/null
-cd ..
+if ! [[ -d ~/PVSS/Public ]]; then mkdir ~/PVSS/Public; fi
+cp 'public.txt' ~/PVSS/Public/
 for ((i=1; i<10; ++i)); do
     if ! [[ -d ~/PVSS/Server$i ]]; then mkdir ~/PVSS/Server$i; fi
-    cp $tmp/$i.txt ~/PVSS/Server$i/
-    cp $tmp/pdfenc ~/PVSS/Server$i/
+    cp $i.txt ~/PVSS/Server$i/
+    cp pdfenc ~/PVSS/Server$i/
 done
-rm -r $tmp
+sha256sum pdfenc > shafile
+theFile="hextochar.cpp"
+echo '#include <bits/stdc++.h>' >> $theFile
+echo 'using namespace std;' >> $theFile
+echo '' >> $theFile
+echo 'signed main(){' >> $theFile
+echo '    FILE *in=fopen("shafile", "rb");' >> $theFile
+echo '    char s[100], t[100];' >> $theFile
+echo '    fread(s, 1, 64, in);' >> $theFile
+echo '    for(int i=0; i<64; ++i)s[i]=s[i]<='"'"'9'"'"'?s[i]-48:s[i]-'"'"'a'"'"'+10;' >> $theFile
+echo '    for(int i=0; i<32; ++i)t[i]=16*s[i*2]+s[i*2+1];' >> $theFile
+echo '    for(int i=0; i<32; ++i)cout<<t[i];' >> $theFile
+echo '}' >> $theFile
+g++ $theFile -o a.out
+./a.out > key.txt
+g++ encrypt.cpp -o a.out
+./a.out &> /dev/null
+cp 'public.txt' ~/PVSS/Public/shaPublic.txt
+for ((i=1; i<10; ++i)); do
+    cp $i.txt ~/PVSS/Server$i/sha$i.txt
+done
+cd ..
+#rm -r $tmp
+echo '上傳完成'
