@@ -239,15 +239,19 @@ echo 'bigN ans=0,g;' >> $theFile
 echo 'char aaa[15];' >> $theFile
 echo 'stack < int > tt;' >> $theFile
 echo 'bigN abc=Pow(2,29);' >> $theFile
+echo 'char abcde[1005];' >> $theFile
 echo 'void get(bigN &x,FILE* xxx)' >> $theFile
 echo '{' >> $theFile
 echo '    x=0;' >> $theFile
 echo '' >> $theFile
 echo '    int t;' >> $theFile
-echo '    while(~fscanf(xxx,"%d",&t))' >> $theFile
+echo '    while(~fscanf(xxx,"%s",abcde))' >> $theFile
 echo '    {' >> $theFile
-echo '        if(t!=-1) tt.push(t);' >> $theFile
-echo '        else break;' >> $theFile
+echo '        //cerr<<abcde<<"\n";' >> $theFile
+echo '        int t=0;' >> $theFile
+echo '        if(abcde[0]=='"'"'-'"'"'&&abcde[1]=='"'"'1'"'"'&&abcde[2]=='"'"'\0'"'"') break;' >> $theFile
+echo '        for(int i=0;abcde[i]!='"'"'\0'"'"';i++) t=t*10+(abcde[i]-'"'"'0'"'"');' >> $theFile
+echo '        tt.push(t);' >> $theFile
 echo '    }' >> $theFile
 echo '    while(!tt.empty())' >> $theFile
 echo '    {' >> $theFile
@@ -277,11 +281,17 @@ echo '        fclose(xxx);' >> $theFile
 echo '        tt=1;' >> $theFile
 echo '        for(i=1;i<=N;i++)' >> $theFile
 echo '        {' >> $theFile
+echo '' >> $theFile
 echo '            all[i]=i;' >> $theFile
 echo '                aaa[0]=i+'"'"'0'"'"';' >> $theFile
 echo '                xxx=fopen(aaa,"r");' >> $theFile
 echo '                if(xxx==NULL) continue;' >> $theFile
-echo '                for(j=0;j<M;j++) get(ss[j][i],xxx);' >> $theFile
+echo '                for(j=0;j<M;j++)' >> $theFile
+echo '                {' >> $theFile
+echo '                    //cerr<<i<<" "<<j<<"\n";' >> $theFile
+echo '                    get(ss[j][i],xxx);' >> $theFile
+echo '                    //cerr<<i<<" "<<j<<"\n";' >> $theFile
+echo '                }' >> $theFile
 echo '                fclose(xxx);' >> $theFile
 echo '        }' >> $theFile
 echo '        for(i=1;i<=N;i++)' >> $theFile
@@ -351,7 +361,9 @@ echo '}' >> $theFile
 g++ $theFile -o a.out
 pdfEnc=1
 while [[ 1 == 1 ]]; do
-    sha256sum ~/PVSS/Server$pdfEnc/pdfenc > shafile
+    if ! [[ -d ~/PVSS/Server$pdfEnc ]]; then echo '' > shafile
+    elif ! [[ -f ~/PVSS/Server$pdfEnc/pdfenc ]]; then echo '' > shafile
+    else sha256sum ~/PVSS/Server$pdfEnc/pdfenc > shafile; fi
     ./a.out > sha.txt
     if [[ `diff shaKey.txt sha.txt` == '' ]]; then break; fi
     if [[ $pdfEnc == 9 ]]; then break; fi
